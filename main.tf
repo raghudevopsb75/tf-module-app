@@ -100,16 +100,16 @@ resource "aws_launch_template" "template" {
     name = aws_iam_instance_profile.instance_profile.name
   }
 
-    block_device_mappings {
-      device_name = "/dev/sda1"
+  block_device_mappings {
+    device_name = "/dev/sda1"
 
-      ebs {
-        volume_size           = 10
-        encrypted             = true
-        delete_on_termination = true
-        kms_key_id            = var.kms_key_id
-      }
+    ebs {
+      volume_size           = 10
+      encrypted             = true
+      delete_on_termination = true
+      kms_key_id            = var.kms_key_id
     }
+  }
 
   user_data = base64encode(templatefile("${path.module}/userdata.sh", {
     role_name = var.component,
@@ -126,9 +126,9 @@ resource "aws_launch_template" "template" {
 
 resource "aws_autoscaling_group" "asg" {
   name                = "${var.env}-${var.component}"
-  desired_capacity    = var.desired_capacity
-  max_size            = var.max_size
-  min_size            = var.min_size
+  desired_capacity    = var.instance_count
+  max_size            = var.instance_count + 5
+  min_size            = var.instance_count
   vpc_zone_identifier = var.subnets
   target_group_arns   = [aws_lb_target_group.tg.arn]
 
@@ -139,7 +139,12 @@ resource "aws_autoscaling_group" "asg" {
   tag {
     key                 = "project"
     propagate_at_launch = true
-    value               = "expense"
+    value               = "roboshop"
+  }
+  tag {
+    key                 = "Monitor"
+    propagate_at_launch = true
+    value               = "true"
   }
 }
 
