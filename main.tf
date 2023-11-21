@@ -166,5 +166,13 @@ resource "aws_lb_target_group" "tg" {
   }
 }
 
+resource "aws_route53_record" "record" {
+  zone_id = var.zone_id
+  name    = "${var.component}-${var.env}"
+  type    = "CNAME"
+  ttl     = 30
+  records = [var.alb_dns_name]
+}
+
 
 

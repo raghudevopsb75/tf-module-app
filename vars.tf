@@ -9,3 +9,5 @@ variable "bastion_node_cidr" {}
 variable "instance_count" {}
 variable "prometheus_cidr" {}
 variable "kms_key_id" {}
+variable "alb_dns_name" {}
+variable "zone_id" {}
